@@ -12,6 +12,15 @@
                 <h1 class="logo">
                     {% if user.username %}
                         <a href="#">{{ user.username }}'s 博客</a>
+                        <div class="dropdown" style="display: inline-block">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li><a href="/create">创建文章</a></li>
+                            </ul>
+                        </div>
                     {% else %}
                         <a href="#">游客's 博客</a>
                     {% endif %}
@@ -64,7 +73,8 @@
                                                 </form>
                                             </div>
                                             <div class="modal-footer" style="text-align: center;">
-                                                <button type="button" class="btn btn-primary" style="width: 100%" id="sub">
+                                                <button type="button" class="btn btn-primary" style="width: 100%"
+                                                        id="sub">
                                                     Login
                                                 </button>
                                             </div>

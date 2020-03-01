@@ -12,10 +12,32 @@
 <body>
 
 {% include 'header.html' %}
-<!-- 加载编辑器的容器 -->
-<script id="container" class="container center-align" name="content" type="text/plain" style="height: 500px">
+<div class="container left-align" style="text-align: left" onmousemove="sub()">
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">正在创建文章的作者为：</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputEmail3" value="{{ user.username }}" disabled>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">正在创建文章的标题为：</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="title">
+            </div>
+        </div>
+    </form>
+
+    <!-- 加载编辑器的容器 -->
+    <script id="container" class="center-align" name="content" type="text/plain" style="height: 400px">
         开始编辑你的内容
-</script>
+
+
+
+
+    </script>
+    <input class='btn btn-info' type="submit" value="提交" id="sub_a" disabled style="width: 100%;">
+</div>
 <!-- 配置文件 -->
 <script type="text/javascript" src="{{ url_for('static',filename="ueditor/ueditor.config.js") }}"></script>
 <!-- 编辑器源码文件 -->
@@ -25,6 +47,36 @@
 <script src="{{ url_for('static',filename="js/bootstrap.min.js") }}"></script>
 <script type="text/javascript">
     var ue = UE.getEditor('container');
+    var sub_a = $('#sub_a')
+    var title = $('#title')
+    var content = UE.getEditor('container')
+
+    function sub() {
+        if (title.val() && content.getContentTxt()) {
+            sub_a.attr('disabled', false)
+        } else {
+            sub_a.attr('disabled', true)
+        }
+    }
+
+    $(function () {
+        sub_a.click(function () {
+            $.ajax({
+                url: '/create',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    title: title.val(),
+                    content: content.getContent(),
+                },
+                success: function (data) {
+                    if (data) {
+                        window.location.href = '/'
+                    }
+                }
+            })
+        })
+    })
 </script>
 {% include 'footer.html' %}
 

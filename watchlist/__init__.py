@@ -3,7 +3,7 @@ import sys
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 
 app = Flask(__name__)
 
@@ -39,7 +39,7 @@ login_manager.login_message = "没有登录"
 @app.context_processor
 def inject_user():
     from watchlist.models import User
-    user = User.query.first()
+    user = current_user
     return dict(user=user)
 
 

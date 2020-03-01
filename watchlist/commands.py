@@ -5,7 +5,7 @@ from watchlist.models import User, Articles
 
 @app.cli.command()
 @click.option('--drop', is_flag=True, help='删除之后再创建')
-def init_db(drop):
+def initdb(drop):
     if drop:
         db.drop_all()
     db.create_all()
@@ -15,11 +15,9 @@ def init_db(drop):
 @app.cli.command()
 def forge():
     db.create_all()
-    movies = [
-        ['苏亮', '111111111111111111111111111111111111111111111111111111111', '2020.3.1', 1]
-    ]
-    for m in movies:
-        movie = Articles(title=m[0], content=m[1], pubdate=m[2], author_id=m[3])
+    movies = ['苏亮', '2020.3.1', 1]
+    for m in range(10):
+        movie = Articles(title=movies[0], content=str(m)*10, pubdate=movies[1], author_id=movies[2])
         db.session.add(movie)
     click.echo('数据导入完成')
 
