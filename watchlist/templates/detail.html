@@ -19,9 +19,9 @@
     <div class="content-wrap">
         <div class="content">
             <header class="article-header">
-                <h1 class="article-title"><a href="#">用DTcms做一个独立博客网站（响应式模板）</a></h1>
+                <h1 class="article-title"><a href="#">{{ info.title }}</a></h1>
                 <div class="article-meta ">
-                    <span class="item time ">2016-10-14</span>
+                    <span class="item time ">{{ info.pubdate }}</span>
                     <span class="item tags">标签：<a href="#">类型</a><a href="#">类型</a><a href="#">类型</a></span>
                     <span class="item views"><i class="glyphicon glyphicon-eye-open"></i> 88</span>
                 </div>
@@ -69,8 +69,7 @@
             <div class="widget widget_hot">
                 <h3>文章目录</h3>
                 <ul id="user_articles">
-                    <li><a title="" href="#"><span class="text">用DTcms做一个独立博客网站（响应式模板）</span></a></li>
-                    <li><a title="" href="#"><span class="text">用DTcms做一个独立博客网站（响应式模板）</span></a></li>
+
                 </ul>
             </div>
             <div class="widget widget_hot ">
@@ -109,7 +108,7 @@
             success:function (data) {
                 var user_articles=$('#user_articles')
                 for(var i=0;i<data.length;i++){
-                    var new_article='<li><a title="" href="/detail/'+data[i].id+'"><span class="text">'+data[i].title+'</span></a></li>'
+                    var new_article='<li><a title="" href="/article/'+data[i].id+'"><span class="text">'+data[i].title+'</span></a></li>'
                     user_articles.append(new_article)
                 }
             }

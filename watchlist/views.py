@@ -1,7 +1,7 @@
-from watchlist import app, db
-from flask import request, redirect, url_for, flash, render_template, jsonify
-from flask_login import login_user, logout_user, login_required, current_user
-from watchlist.models import User, Articles
+from watchlist import app
+from flask import jsonify, request, render_template, make_response, redirect, url_for
+from flask_login import login_required, current_user, logout_user, login_user
+from watchlist.models import Articles, User
 from .sqltodict import queryToDict
 
 
@@ -107,9 +107,10 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/detail/<int:id_>', methods=['GET'])
+@app.route('/article/<int:id_>', methods=['GET'])
 def detail(id_):
-    return render_template('detail.html', info=queryToDict(Articles.query.filter_by(id=id_)))
+    article = Articles.query.filter_by(id=id_)[0]
+    return render_template('detail.html', info=article)
 
 
 @app.route('/new_articles/<int:number>', methods=['GET'])
@@ -132,3 +133,35 @@ def page(num):
     if len(Articles.query.all()[num * 5:]) > 0:
         flag = True
     return jsonify(queryToDict(articles) + [flag])
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    if request.method == 'POST':
+        username = request.values['username']
+        password = request.values['password']
+
+        if not username or not password:
+            return jsonify(False)
+        user = User.query.filter_by(username=username).first()
+        if user and user.validate_password(password):
+            login_user(user)
+            return jsonify(True)
+        return jsonify(False)
+
+
+@app.route('/logout', methods=['OPTIONS'])
+@login_required
+def logout():
+    logout_user()
+    return jsonify(True)
+
+
+@app.route('/create', methods=['GET'])
+def create():
+    return render_template('create.html')
+
+
+@app.route('/upload/', methods=['GET', 'POST'])
+def upload():
+    pass

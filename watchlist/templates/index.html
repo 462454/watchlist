@@ -21,22 +21,17 @@
             <div class="title">
                 <h3>最新发布</h3>
             </div>
-            <div id="mainArticles">
+            <div id="mainArticles" style="min-width: 800px;">
 
             </div>
 
-            <nav aria-label="Page navigation">
+            <nav aria-label="Page navigation" class="center-align" style="text-align: center;align-items: center">
                 <ul class="pagination">
                     <li>
                         <a href="#" aria-label="Previous">
                             <span aria-hidden="true" id="on">上一页</span>
                         </a>
                     </li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
                     <li>
                         <a href="#" aria-label="Next">
                             <span aria-hidden="true" id="under">下一页</span>
@@ -45,7 +40,7 @@
                 </ul>
             </nav>
         </div>
-        <div class="sidebar">
+        <div class="sidebar" style="float: right">
             <div class="widget widget_hot">
                 <h3>最新文章</h3>
                 <ul id="articles">
@@ -61,61 +56,93 @@
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
 <script src="{{ url_for('static',filename="js/bootstrap.min.js") }}"></script>
 <script>
-    page_num=1
-    flag=true
-    function page(){
+    page_num = 1
+    flag = true
+
+    function page() {
         $.ajax({
-            url:"/page/"+page_num,
-            type:'get',
-            dataType:'json',
-            success:function (data) {
-                flag=data[data.length-1]
-                console.log(flag)
-                var mainArticles=$('#mainArticles')
+            url: "/page/" + page_num,
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                flag = data[data.length - 1]
+                var mainArticles = $('#mainArticles')
                 mainArticles.empty()
-                for(var i=0;i<data.length-1;i++){
-                    var new_article='<div class="excerpt"><header><a class="cat" href="#">博客<i></i></a><h2><a href="'+data[i].id+'">'+data[i].title+'</a></h2></header><p>'+data[i].content+'</p><p class="meta"><a class="time" href="#"><i class="glyphicon glyphicon-time"></i> '+data[i].pubdate+'</a><a class="views" href="#"><i class="glyphicon glyphicon-eye-open"></i> 88</a><a class="comment" href="#"><i class="glyphicon glyphicon-comment"></i> 10</a></p></div>'
+                for (var i = 0; i < data.length - 1; i++) {
+                    var new_article = '<div class="excerpt"><header><a class="cat" href="#">博客<i></i></a><h2><a href="/article/' + data[i].id + '">' + data[i].title + '</a></h2></header><p>' + data[i].content + '</p><p class="meta"><a class="time" href="#"><i class="glyphicon glyphicon-time"></i> ' + data[i].pubdate + '</a><a class="views" href="#"><i class="glyphicon glyphicon-eye-open"></i> 88</a><a class="comment" href="#"><i class="glyphicon glyphicon-comment"></i> 10</a></p></div>'
                     mainArticles.append(new_article)
                 }
             }
         })
     }
+
     $(function () {
         page()
         $.ajax({
-            url:"/new_articles/5",
-            type:'get',
-            dataType:'json',
-            success:function (data) {
-                var articles=$('#articles')
-                for(var i=0;i<data.length;i++){
-                    var new_article='<li><a title="" href="/article/'+data[i].id+'"><span class="text">'+data[i].title+'</span><span class="muted"><i class="glyphicon glyphicon-time"></i>'+data[i].pubdate+'</span><span class="muted"><i class="glyphicon glyphicon-eye-open"></i> 88</span></a></li>'
+            url: "/new_articles/5",
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                var articles = $('#articles')
+                for (var i = 0; i < data.length; i++) {
+                    var new_article = '<li><a title="" href="/article/' + data[i].id + '"><span class="text">' + data[i].title + '</span><span class="muted"><i class="glyphicon glyphicon-time"></i>' + data[i].pubdate + '</span><span class="muted"><i class="glyphicon glyphicon-eye-open"></i> 88</span></a></li>'
                     articles.append(new_article)
                 }
             }
         })
 
-        var under=$('#under')
-        var on=$('#on')
+        var under = $('#under')
+        var on = $('#on')
         on.click(function () {
-            page_num=page_num-1
-            if (page_num<1){
-                page_num=1
+            page_num = page_num - 1
+            if (page_num < 1) {
+                page_num = 1
                 page()
-            }
-            else {
+            } else {
                 page()
             }
         })
         under.click(function () {
-            if (flag){
-                page_num=page_num+1
+            if (flag) {
+                page_num = page_num + 1
+                page()
+            } else {
                 page()
             }
-            else {
-                page()
-            }
+        })
 
+        var username = $('#username')
+        var password = $('#password')
+        var sub = $('#sub')
+        sub.click(function () {
+            $.ajax({
+                url: '/login',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    username: username.val(),
+                    password: password.val(),
+                },
+                success: function (data) {
+                    if (data) {
+                        window.location.href = '/'
+                    } else {
+                        console.log('账号密码错误')
+                    }
+                }
+            })
+        })
+
+        var logout=$('#logout')
+        logout.click(function () {
+            $.ajax({
+                url: '/logout',
+                type: 'options',
+                dataType: 'json',
+                success: function (data) {
+                    window.location.href = '/'
+                }
+            })
         })
     })
 </script>
