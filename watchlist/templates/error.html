@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename="css/style.css") }}">
+    <style type="text/css">
+        .panel {
+            padding: 120px 20px 0;
+            min-height: 600px;
+        }
+
+        .text-center {
+            margin: 0 auto;
+            text-align: center;
+            border-radius: 10px;
+            max-width: 900px;
+        }
+
+        .padding-big {
+            padding: 30px;
+        }
+
+        .padding-big span {
+            margin: 10px;
+        }
+
+        .padding-big a {
+            font-size: 14px;
+            display: inline-block;
+            padding: 4px 8px;
+            border: 1px solid #009a61;
+            background-color: #fff;
+            color: #009a61;
+            border-radius: 5px;
+        }
+
+        .padding-big a:hover {
+            font-size: 14px;
+            display: inline-block;
+            padding: 4px 8px;
+            border: 1px solid #009a61;
+            background-color: #009a61;
+            color: #fff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+{% include 'header.html' %}
+
+<div class="container">
+    <div class="panel">
+        <div class="text-center">
+            <h3>
+                <stong>{{ information }}</stong>
+            </h3>
+            <div class="padding-big">
+                <span><a href="/">返回首页</a></span>
+                <span><a href="error.html">联系我们</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'footer.html' %}
+
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="{{ url_for('static',filename="js/bootstrap.min.js") }}"></script>
+</body>
+
+</html>

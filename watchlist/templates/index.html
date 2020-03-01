@@ -1,36 +1,124 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="zh-CN">
 
-{% block content %}
-    <p>{{ movies|length }} Titles</p>
-    {% if current_user.is_authenticated %}
-        <form method="POST">
-            电影名 <input type="text" name="title" autocomplete="off" required>
-            年份 <input type="text" name="year" autocomplete="off" required>
-            <input type="submit" class="btn" name="submit" value="添加">
-        </form>
-    {% endif %}
-    <ul class="movie-list">
-        {% for movie in movies %}
-            <li>
-                {{ movie.title }} - {{ movie.year }}
-                <span class="float-right">
-            <a class="vbd"
-               href="http://v.baidu.com/v?word={{ movie.title }}&ct=301989888&rn=67&pn=0&db=0&s=0&fbl=800&ie=utf-8&oq=nnkd&f=3&rsp=0"
-               target="_blank" title="在百度视频中查找此电影">百度视频</a>
-        </span>
-                {% if current_user.is_authenticated %}
-                    <span class="float-right">
-            <a class="btn" href="{{ url_for('edit',movie_id=movie.id) }}">编辑</a>
-        </span>
-                    <span class="float-right">
-            <form class="inline-form" action="{{ url_for('delete',movie_id=movie.id) }}" method="post">
-                <input class="btn" type="submit" name='delete' value="删除" onclick="return confirm('确定删除吗？')">
-            </form>
-        </span>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename="css/style.css") }}">
+</head>
 
-    <img class="hulu" src="{{ url_for('static',filename='images/5.jpg') }}" alt="">
-{% endblock %}
+<body>
+
+{% include 'header.html' %}
+
+<div class="container">
+    <div class="content-wrap">
+        <div class="content">
+            <div class="title">
+                <h3>最新发布</h3>
+            </div>
+            <div id="mainArticles">
+
+            </div>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true" id="on">上一页</span>
+                        </a>
+                    </li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true" id="under">下一页</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="sidebar">
+            <div class="widget widget_hot">
+                <h3>最新文章</h3>
+                <ul id="articles">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'footer.html' %}
+
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="{{ url_for('static',filename="js/bootstrap.min.js") }}"></script>
+<script>
+    page_num=1
+    flag=true
+    function page(){
+        $.ajax({
+            url:"/page/"+page_num,
+            type:'get',
+            dataType:'json',
+            success:function (data) {
+                flag=data[data.length-1]
+                console.log(flag)
+                var mainArticles=$('#mainArticles')
+                mainArticles.empty()
+                for(var i=0;i<data.length-1;i++){
+                    var new_article='<div class="excerpt"><header><a class="cat" href="#">博客<i></i></a><h2><a href="'+data[i].id+'">'+data[i].title+'</a></h2></header><p>'+data[i].content+'</p><p class="meta"><a class="time" href="#"><i class="glyphicon glyphicon-time"></i> '+data[i].pubdate+'</a><a class="views" href="#"><i class="glyphicon glyphicon-eye-open"></i> 88</a><a class="comment" href="#"><i class="glyphicon glyphicon-comment"></i> 10</a></p></div>'
+                    mainArticles.append(new_article)
+                }
+            }
+        })
+    }
+    $(function () {
+        page()
+        $.ajax({
+            url:"/new_articles/5",
+            type:'get',
+            dataType:'json',
+            success:function (data) {
+                var articles=$('#articles')
+                for(var i=0;i<data.length;i++){
+                    var new_article='<li><a title="" href="/article/'+data[i].id+'"><span class="text">'+data[i].title+'</span><span class="muted"><i class="glyphicon glyphicon-time"></i>'+data[i].pubdate+'</span><span class="muted"><i class="glyphicon glyphicon-eye-open"></i> 88</span></a></li>'
+                    articles.append(new_article)
+                }
+            }
+        })
+
+        var under=$('#under')
+        var on=$('#on')
+        on.click(function () {
+            page_num=page_num-1
+            if (page_num<1){
+                page_num=1
+                page()
+            }
+            else {
+                page()
+            }
+        })
+        under.click(function () {
+            if (flag){
+                page_num=page_num+1
+                page()
+            }
+            else {
+                page()
+            }
+
+        })
+    })
+</script>
+</body>
+
+</html>

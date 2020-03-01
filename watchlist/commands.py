@@ -1,11 +1,11 @@
 import click
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Articles
 
 
 @app.cli.command()
 @click.option('--drop', is_flag=True, help='删除之后再创建')
-def initdb(drop):
+def init_db(drop):
     if drop:
         db.drop_all()
     db.create_all()
@@ -15,44 +15,26 @@ def initdb(drop):
 @app.cli.command()
 def forge():
     db.create_all()
-    name = "Bruce"
     movies = [
-        {'title': '杀破狼', 'year': '2003'},
-        {'title': '扫毒', 'year': '2018'},
-        {'title': '捉妖记', 'year': '2016'},
-        {'title': '囧妈', 'year': '2020'},
-        {'title': '葫芦娃', 'year': '1989'},
-        {'title': '玻璃盒子', 'year': '2020'},
-        {'title': '调酒师', 'year': '2020'},
-        {'title': '釜山行', 'year': '2017'},
-        {'title': '导火索', 'year': '2005'},
-        {'title': '叶问', 'year': '2015'}
+        ['苏亮', '111111111111111111111111111111111111111111111111111111111', '2020.3.1', 1]
     ]
-    user = User(name=name)
-    db.session.add(user)
     for m in movies:
-        movie = Movie(title=m['title'], year=m['year'])
+        movie = Articles(title=m[0], content=m[1], pubdate=m[2], author_id=m[3])
         db.session.add(movie)
-    db.session.commit()
     click.echo('数据导入完成')
 
 
-# 生成admin账号的函数
 @app.cli.command()
 @click.option('--username', prompt=True, help="用来登录的用户名")
 @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True, help="用来登录的密码")
 def admin(username, password):
     db.create_all()
-    user = User.query.first()
-    if user is not None:
-        click.echo('更新用户')
-        user.username = username
-        user.set_password(password)
-    else:
-        click.echo('创建用户')
-        user = User(username=username, name="雷洛")
+    if all([username, password]) and not User.query.filter_by(username=username).first():
+        user = User(username=username)
         user.set_password(password)
         db.session.add(user)
+    else:
+        click.echo('未成功创建,原因可能是重复或者信息填写错误')
+        exit()
 
-    db.session.commit()
     click.echo('创建管理员账号完成')

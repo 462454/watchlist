@@ -16,7 +16,9 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
 
-class Movie(db.Model):
+class Articles(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(60))
-    year = db.Column(db.String(4))
+    title = db.Column(db.String(50))
+    content = db.Column(db.Text)
+    pubdate = db.Column(db.String(30))
+    author_id = db.Column(db.INTEGER, db.ForeignKey('user.id'))
